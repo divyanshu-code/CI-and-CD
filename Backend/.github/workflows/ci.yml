@@ -1,0 +1,31 @@
+name: simple backend ci       # name of the workflow
+
+# TRIGGER
+
+on:                           # trigger the workflow on push or pull request events to the main branch
+  push:
+    branches: [main]
+  pull request:
+    branches: [main]
+
+#INSTRUCTIONS
+
+jobs:                         
+  run-tests:                    # define a job named "run-tests" that runs on the latest version of Ubuntu. we use ubuntu-latest because it is a stable and widely used operating system that provides a consistent environment for running tests.
+  
+     runs-on: ubuntu-latest     
+
+     steps:
+       - name: get the code              # checkout the code from the repository using the actions/checkout action.
+         uses: actions/checkout@v4
+
+       - name: install node.js              # install the latest version of node.js
+         uses: actions/setup-node@v4
+         with:
+            node-versions: '20'
+
+       - name: install dependencies         # install the dependencies defined in the package.json file using npm install command.
+         run: npm install
+
+       - name: run tests                    # run the tests defined in the package.json file using npm test command.
+         run: npm start
