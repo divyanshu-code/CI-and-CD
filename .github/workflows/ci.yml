@@ -26,11 +26,11 @@ jobs:
 
        - name: install dependencies         # install the dependencies defined in the package.json file using npm install command.
          run: npm install
-         working-directory: ./backend
+         working-directory: ./Backend
 
        - name: run tests                    # run the tests defined in the package.json file using npm test command.
          run: npm test
-         working-directory: ./backend
+         working-directory: ./Backend
 
 
 
