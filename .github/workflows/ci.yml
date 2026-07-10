@@ -5,7 +5,7 @@ name: simple backend ci       # name of the workflow
 on:                           # trigger the workflow on push or pull request events to the main branch
   push:
     branches: [main]
-  pull request:
+  pull_request:
     branches: [main]
 
 #INSTRUCTIONS
@@ -22,10 +22,53 @@ jobs:
        - name: install node.js              # install the latest version of node.js
          uses: actions/setup-node@v4
          with:
-            node-versions: '20'
+            node-version: '20'
 
        - name: install dependencies         # install the dependencies defined in the package.json file using npm install command.
          run: npm install
+         working-directory: ./backend
 
        - name: run tests                    # run the tests defined in the package.json file using npm test command.
-         run: npm start
+         run: npm test
+         working-directory: ./backend
+
+
+
+# 1) workflows always make in root directory of the project. so we have to create a folder named .github and inside that folder we have to create a folder named workflows and inside that folder we have to create a file named ci.yml. this is the path of the file .github/workflows/ci.yml. so by the help of path and working -directory we can run the tests of backend and frontend separately. so we have to create two files one for frontend and one for backend. so we have to create a file named frontend-ci.yml and backend-ci.yml. so in frontend-ci.yml we have to write the code for frontend and in backend-ci.yml we have to write the code for backend. so by the help of this we can run the tests of frontend and backend separately.
+
+# my-monorepo/
+# ├── .github/
+# │   └── workflows/
+# │       ├── frontend-ci.yml  <-- Handles React
+# │       └── backend-ci.yml   <-- Handles Express
+# ├── react-frontend/
+# ├── Express-backend-1/
+# └── Express-backend-2/
+
+# for example: 
+   
+      # name : frontend ci
+      # on:
+          # push:
+          #   branches: [main]
+          # pull_request:
+          #   branches: [main]
+          # path: 
+          #    react-frontend/**      trigger the workflow only when changes are made in the react-frontend directory.
+
+      # jobs:
+      #   run-tests:
+              
+           # runs-on: ubuntu-latest
+              #  defaults:
+              #       run:
+              #        working-directory: react-frontend
+            
+            # steps:
+      #             - uses: actions/checkout@v4
+      #             - uses: actions/setup-node@v4
+      #               with:
+      #                  node-version: '20'
+      #             - run: npm install
+      #             - run: npm run build
+            
