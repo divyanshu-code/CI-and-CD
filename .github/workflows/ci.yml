@@ -1,3 +1,5 @@
+# CI ( Continuous Integration )
+
 name: simple backend ci       # name of the workflow
 
 # TRIGGER
@@ -7,6 +9,8 @@ on:                           # trigger the workflow on push or pull request eve
     branches: [main]
   pull_request:
     branches: [main]
+  path:
+    Backend/**                # trigger the workflow only when changes are made in the Backend directory.
 
 #INSTRUCTIONS
 
@@ -31,6 +35,19 @@ jobs:
        - name: run tests                    # run the tests defined in the package.json file using npm test command.
          run: npm test
          working-directory: ./Backend
+
+# CD ( Continuous Deployment )
+
+  deploy:
+    needs: run-tests            # this job will only run if the "run-tests" job is successful.        
+
+    runs-on: ubuntu-latest
+
+    steps:
+       - name: Trigger Render deploy
+         run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"  # trigger the deployment on Render using a webhook URL stored in the repository secrets.
+
+
 
 
 
@@ -72,3 +89,5 @@ jobs:
       #             - run: npm install
       #             - run: npm run build
             
+
+# 2) for CD never ever hardcode the deploy hook url in the ci.yml file because it is a secret and it should be stored in the repository secrets. so we have to create a secret in the repository settings and we have to store the deploy hook url in that secret. so we can access that secret in the ci.yml file by using the syntax ${{ secrets.RENDER_DEPLOY_HOOK_URL }}. so we can trigger the deployment on Render using a webhook URL stored in the repository secrets.

@@ -33,6 +33,7 @@ Then open `http://localhost:3000` in your browser. The app responds with `hello 
 - Learned that Express 5 can be used with modern ES module syntax by setting `type": "module"`.
 - learned the basics rule about the CI and CD.
 - learned about the importance of path and working directory.
+- learned the importance of webhook URL stored in the repository secrets.
 
 ## Notes
 
