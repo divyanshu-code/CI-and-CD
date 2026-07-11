@@ -45,7 +45,7 @@ jobs:
 
     steps:
        - name: Trigger Render deploy
-         run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"  # trigger the deployment on Render using a webhook URL stored in the repository secrets.
+         run: curl -X POST "${{ secrets.RENDER_DEPLOY_HOOK }}"  # trigger the deployment on Render using a webhook URL stored in the repository secrets.
 
 
 
