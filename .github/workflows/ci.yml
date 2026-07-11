@@ -7,10 +7,12 @@ name: simple backend ci       # name of the workflow
 on:                           # trigger the workflow on push or pull request events to the main branch
   push:
     branches: [main]
+    paths:
+      - Backend/**               # trigger the workflow only when changes are made in the Backend directory.
   pull_request:
     branches: [main]
-  path:
-    Backend/**                # trigger the workflow only when changes are made in the Backend directory.
+    paths:
+      - Backend/**                
 
 #INSTRUCTIONS
 
@@ -70,8 +72,8 @@ jobs:
           #   branches: [main]
           # pull_request:
           #   branches: [main]
-          # path: 
-          #    react-frontend/**      trigger the workflow only when changes are made in the react-frontend directory.
+          # paths: 
+          #   - react-frontend/**      trigger the workflow only when changes are made in the react-frontend directory.
 
       # jobs:
       #   run-tests:
