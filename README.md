@@ -39,3 +39,4 @@ Then open `http://localhost:3000` in your browser. The app responds with `hello 
 
 - The server listens on port `3000`.
 - The current project is a starting point and can be extended with routes, middleware, and API behavior.
+- Always take care of indentation and singular plural for writing the workflow file.
