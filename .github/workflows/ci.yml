@@ -8,13 +8,13 @@ on:                           # trigger the workflow on push or pull request eve
   push:
     branches: [main]
     paths:
-      - Backend/**               # trigger the workflow only when changes are made in the Backend directory.
+      - Backend/**            # trigger the workflow only when changes are made in the Backend directory.
   pull_request:
     branches: [main]
     paths:
       - Backend/**                
 
-#INSTRUCTIONS
+# INSTRUCTIONS
 
 jobs:                         
   run-tests:                    # define a job named "run-tests" that runs on the latest version of Ubuntu. we use ubuntu-latest because it is a stable and widely used operating system that provides a consistent environment for running tests.
