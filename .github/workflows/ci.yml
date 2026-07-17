@@ -12,7 +12,7 @@ on:                           # trigger the workflow on push or pull request eve
   pull_request:
     branches: [main]
     paths:
-      - Backend/**                
+      - Backend/**
 
 # INSTRUCTIONS
 
