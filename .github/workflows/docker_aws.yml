@@ -1,0 +1,67 @@
+name: CI and CD for Docker and AWS
+
+on:
+    push:
+        branches: [main]
+        paths:
+            - Backend_docker/** 
+    pull_request:
+        branches: [main]
+        paths:
+            - Backend_docker/**
+
+env:
+  AWS_REGION: ap-south-1
+  ECR_REPOSITORY: my-backend/ciandcd
+  ECS_CLUSTER: sturdy-ostrich-rk7m3o
+  ECS_SERVICE: ci-cd-service
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: Backend_docker
+
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '20'
+            - run: npm install
+            - run: npm test
+
+    build-and-deploy:
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+            - name: get the code
+              uses: actions/checkout@v4
+ 
+            - name: Configure AWS credentials                # configure the AWS credentials using the aws-actions/configure-aws-credentials action. This action sets up the AWS CLI with the provided access key, secret access key, and region.
+
+              uses: aws-actions/configure-aws-credentials@v4     # it is aws configure action which is used to configure the AWS credentials in the GitHub Actions workflow. It allows you to authenticate with AWS services using access keys and secret access keys stored in GitHub Secrets.
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ env.AWS_REGION }}
+
+            - name: Log in to Amazon ECR             # log in to Amazon Elastic Container Registry (ECR) using the aws-actions/amazon-ecr-login action. This action retrieves an authentication token from ECR and configures Docker to use it for pushing and pulling images. It simplifies the process of authenticating with ECR, allowing you to securely push your Docker images to your ECR repository without manually handling credentials.
+              id: login-ecr
+              uses: aws-actions/amazon-ecr-login@v2
+
+            - name: Build, tag, and push image to Amazon ECR  # build a Docker image, tag it with the ECR repository URI, and push it to Amazon ECR. The ECR_REGISTRY environment variable is set to the registry URI obtained from the previous step. The Docker build command creates the image based on the Dockerfile in the Backend_docker directory, and the Docker push command uploads the image to the specified ECR repository.
+              working-directory: Backend_docker
+              env:
+                  ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+              run: | 
+                 docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+                 docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+            - name: Update ECS service    # update the ECS service to use the newly pushed Docker image. The aws ecs update-service command is executed with the specified cluster name, service name, and region. The --force-new-deployment flag ensures that a new deployment is triggered, causing the ECS service to pull the latest image from ECR and update the running tasks accordingly. This step effectively deploys the updated application to the ECS cluster.
+              run: |
+                  aws ecs update-service \
+                  --cluster $ECS_CLUSTER \
+                  --service $ECS_SERVICE \
+                  --force-new-deployment \
+                  --region $AWS_REGION
